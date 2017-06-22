@@ -11,7 +11,7 @@ while True:
     #detecting motion by subtracitng frames
     frameDelta = cv2.absdiff(gray2, gray)
     thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
-    thresh = cv2.dilate(thresh, None, iterations=2)
+    thresh = cv2.dilate(thresh, None, iterations=3)
     #finding contours in the b/w image
     img,cnts,_ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     for c in cnts:
@@ -19,8 +19,7 @@ while True:
             continue
         (x,y, w, h) = cv2.boundingRect(c)
 # compute the bounding box for the contour, draw it on the frame,
-# and update the text(x, 
-        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(thresh, (x, y), (x + w, y + h), (0, 255, 0), 2)
     cv2.imshow("frameDelta",frameDelta)
     cv2.imshow("thresh",thresh)
     cv2.imshow("trial",gray)
