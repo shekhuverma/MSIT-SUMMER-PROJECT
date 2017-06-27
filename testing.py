@@ -1,20 +1,20 @@
-import cv2,time,matplotlib
+import cv2,matplotlib
 import numpy as np
 import pyautogui
-aGest=cv2.CascadeClassifier('aGest.xml')
-cam=cv2.VideoCapture(0)
-last_time=time.time()
-print "Open is red close is blue"
-while True:
-    ret,img=cam.read()
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    Agest=aGest.detectMultiScale(gray, 1.3,1)
-    for (x,y,w,h) in Agest:
-        cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
-    cv2.imshow("result",img)
-    if cv2.waitKey(1) & 0xFF==ord('q'):
+import functions as f
+HIST=[]
+HOG=[]
+np.array(HIST)
+np.array(HOG)
+img=cv2.imread("test.jpg")
+print img.shape[0]
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+for a in range(0,len(img),8):#column
+    for b in range(0,len(img),8):#row
+        temp=img[b:b+8,a:a+8]
+        np.array(temp)
+        hist=cv2.calcHist([temp],[0],None,[256],[0,256])
+        print hist
         break
-    print "Frame rate == " ,1/(time.time()-last_time)
-    last_time=time.time()
-cam.release()
+        HIST.append(temp)
 cv2.destroyAllWindows()
