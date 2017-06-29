@@ -1,22 +1,14 @@
 import cv2,matplotlib,os
 import numpy as np
 from PIL import Image
+from sklearn.svm import SVC
 path="hand_data"
-Descriptor=[]
-svm = cv2.ml.SVM_create()
-# Set SVM type
-svm.setType(cv2.ml.SVM_C_SVC)
-# Set SVM Kernel to Radial Basis Function (RBF) 
-svm.setKernel(cv2.ml.SVM_RBF)
-# Set parameter C
-svm.setC(100)
-# Set parameter Gamma
-svm.setGamma(20)
+classifier=SVC(kernel='rbf',random_state=0)
 #######descriptor values
-winSize = (20,20)
-blockSize = (10,10)
+winSize = (100,100)
+blockSize = (25,25)
 blockStride = (5,5)
-cellSize = (10,10)
+cellSize = (5,5)
 nbins = 9
 derivAperture = 1
 winSigma = -1.
@@ -25,7 +17,7 @@ L2HysThreshold = 0.2
 gammaCorrection = 1
 nlevels = 64
 signedGradients = True
-hog = cv2.HOGDescriptor(winSize,blockSize,blockStride,cellSize,nbins,derivAperture,winSigma,histogramNormType,L2HysThreshold,gammaCorrection,nlevels,signedGradients)
+hog = cv2.HOGDescriptor(winSize,blockSize,blockStride,cellSize,nbins,derivAperture,winSigma,histogramNormType,L2HysThreshold,gammaCorrection,nlevels, signedGradients)
 ## getting images from dataset
 paths=[os.path.join(path,x) for x in os.listdir(path)]
 for x in paths:
@@ -33,9 +25,9 @@ for x in paths:
         continue
     try:
         img=Image.open(x).convert('L')
-        img=np.array(img,dtype='uint8')
+        img=np.array(img)
         descriptor=hog.compute(img)
-        svm.train(Descriptor, cv2.ml.ROW_SAMPLE,[1])
+        classifier.fit(descriptor,[1])
     except IOError:
         continue
 # Save trained model 
