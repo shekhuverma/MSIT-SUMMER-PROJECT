@@ -3,7 +3,8 @@ import numpy as np
 from PIL import Image
 from skimage.feature import hog
 from sklearn.svm import LinearSVC
-from sklearn.externals import joblib   
+from sklearn.externals import joblib  
+import pandas as pd 
 pos_path="hand_data"
 neg_path="neg_data"
 Features=[]
@@ -38,8 +39,14 @@ for x in neg_paths:
     except IOError:
         continue
 joblib.dump(Features,"features.pkl")
+joblib.dump(Labels,"labels.pkl")
+Labels=joblib.load("labels.pkl")
 Features=joblib.load("features.pkl")
-classifier.fit(features2,Labels)
+data=pd.DataFrame.from_records(Features,columns=None)
+temp=temp[:,:1152]
+temp=np.array(data)
+classifier.fit(temp,Labels)
+joblib.dump(classifier,"model1.pkl")
 # Save trained model 
 svm.save("digits_svm_model.yml");
 cv2.destroyAllWindows()
