@@ -23,7 +23,6 @@ while(1):
     h = cv2.getTrackbarPos('h','result')
     s = cv2.getTrackbarPos('s','result')
     v = cv2.getTrackbarPos('v','result')
-    th = cv2.getTrackbarPos('threshold','result')
     arr=[h,s,v]
     arr=np.array(arr,dtype=np.uint8)
     np.savetxt("config.txt",arr,delimiter="'")
@@ -34,9 +33,7 @@ while(1):
     mask = cv2.inRange(hsv,lower_blue, upper_blue)
 
     result = cv2.bitwise_and(frame,frame,mask = mask)
-    ret,thresh = cv2.threshold(result,th,255,cv2.THRESH_BINARY)
     cv2.imshow('result',result)
-    cv2.imshow('thresh',thresh)
     if cv2.waitKey(10) & 0xFF==ord("q"):
         break
 
