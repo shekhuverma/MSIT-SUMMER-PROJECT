@@ -1,6 +1,7 @@
 import cv2,time,pyautogui
 import numpy as np
 print "Press Q to quit the program at any time......."
+print "Move the hand within the rectangle....."
 kernelopen=np.ones((5,5),np.uint8)
 kernelclose=np.ones((10,10),np.uint8)
 cap = cv2.VideoCapture(0)
@@ -13,7 +14,8 @@ print ORANGE_MAX
 
 while(cap.isOpened()) :
     last_time=time.time()
-    ret,img = cap.read()    #capturing frame
+    ret,img = cap.read() #capturing frame
+    img=cv2.flip(img,1)
     cv2.rectangle(img,(0,0),(320,300),(0,255,0),2)
     img2=img[:320,:300]
 ########### pre processing #################
@@ -67,7 +69,7 @@ while(cap.isOpened()) :
                 cv2.circle(img,far,5,[0,0,255],-1)
         except:
             continue
-        print i 
+##        print i 
         if i in range(4,6):
             x=(cx*1920)/320
             y=(cy*1080)/300
@@ -75,7 +77,7 @@ while(cap.isOpened()) :
         i=0
     cv2.imshow('result',img)
     cv2.imshow("output",drawing)
-    cv2.imshow("thresh1",thresh1)
+##    cv2.imshow("thresh1",thresh1)
     print "FPS==",1.0/(time.time()-last_time)
     last_time=time.time()
     if cv2.waitKey(2) & 0xFF == ord('q'):
