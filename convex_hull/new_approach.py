@@ -7,11 +7,8 @@ clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 ORANGE_MIN = np.array([0, 0, 0],np.uint8)
 ORANGE_MAX = np.loadtxt('config.txt')
 ORANGE_MAX=np.array(ORANGE_MAX,dtype=np.uint8)
-for a in range(len(ORANGE_MAX)):
-    if ORANGE_MAX[a]==0:
-        ORANGE_MAX[a]=255
-    else:
-        continue
+print ORANGE_MAX
+
 while(cap.isOpened()) :
     last_time=time.time()
     ret,img = cap.read()    #capturing frame
