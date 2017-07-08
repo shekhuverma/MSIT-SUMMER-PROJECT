@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import pickle
-print "Adjust the sliders so that your hand will be become black (Choose the best possible combination)"
+print "Adjust the sliders so that background will be become black (Choose the best possible combination)"
 cap = cv2.VideoCapture(0)
 # Creating a window for later use
 cv2.namedWindow('result')

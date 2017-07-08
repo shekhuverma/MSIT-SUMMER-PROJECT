@@ -1,5 +1,7 @@
-import cv2,time,pyautogui
+import cv2,time
 import numpy as np
+from pynput.mouse import Button,Controller
+mouse=Controller()
 print "Press Q to quit the program at any time......."
 print "Move the hand within the rectangle....."
 kernelopen=np.ones((5,5),np.uint8)
@@ -73,7 +75,7 @@ while(cap.isOpened()) :
         if i in range(4,6):
             x=(cx*1920)/320
             y=(cy*1080)/300
-            pyautogui.moveTo(x,y)
+            mouse.position=(x,y)
         i=0
     cv2.imshow('result',img)
     cv2.imshow("output",drawing)
