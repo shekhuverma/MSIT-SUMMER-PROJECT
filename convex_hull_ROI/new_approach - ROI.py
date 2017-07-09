@@ -4,17 +4,22 @@ from pynput.mouse import Button,Controller
 mouse=Controller()
 print "Press Q to quit the program at any time......."
 print "Move the hand within the rectangle....."
-kernelopen=np.ones((5,5),np.uint8)
+kernelopen=np.ones((6,6),np.uint8)
 kernelclose=np.ones((10,10),np.uint8)
 cap = cv2.VideoCapture(0)
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-#reding from config file and applying settings
-ORANGE_MIN = np.array([0, 0, 0],np.uint8)
-ORANGE_MAX = np.loadtxt('config.txt')
-ORANGE_MAX=np.array(ORANGE_MAX,dtype=np.uint8)
-print ORANGE_MAX
+###coordinates for mouse movements
+##coord_x=np.array([])
+##lis=[]
 
-while(cap.isOpened()) :
+#reding from config file and applying settings
+ORANGE_MIN = (np.loadtxt('config.txt')).astype("uint8")
+ORANGE_MAX = (np.loadtxt('config1.txt')).astype("uint8")
+switch= (np.loadtxt('config3.txt')).astype("uint8")
+print ORANGE_MAX
+print ORANGE_MIN
+print switch
+while True:
     last_time=time.time()
     ret,img = cap.read() #capturing frame
     img=cv2.flip(img,1)
@@ -25,8 +30,12 @@ while(cap.isOpened()) :
     hsv_img = cv2.inRange(hsv_img, ORANGE_MIN, ORANGE_MAX)
     res = cv2.bitwise_and(img2,img2, mask= hsv_img)   #masking image to remove bg
     gray=cv2.cvtColor(res,cv2.COLOR_BGR2GRAY)   #converting to grayscale
+    gray=cv2.GaussianBlur(gray,(5,5),0)
     gray = clahe.apply(gray)        #histogram normalisation
-    ret,thresh1 = cv2.threshold(gray,10,255,cv2.THRESH_BINARY_INV)
+    if switch==1:           #subject black
+        ret,thresh1 = cv2.threshold(gray,70,255,cv2.THRESH_BINARY_INV)
+    else:
+        ret,thresh1 = cv2.threshold(gray,70,255,cv2.THRESH_BINARY)
     thresh1 = cv2.morphologyEx(thresh1, cv2.MORPH_OPEN, kernelopen)
     thresh1 = cv2.morphologyEx(thresh1, cv2.MORPH_CLOSE, kernelclose)
     
@@ -51,7 +60,7 @@ while(cap.isOpened()) :
         cx = int(moments['m10']/moments['m00']) # cx = M10/M00
         cy = int(moments['m01']/moments['m00']) # cy = M01/M00
     centr=(cx,cy)       
-    cv2.circle(img,centr,5,[0,0,255],2)       
+    cv2.circle(img,centr,5,[255,255,255],2)       
     cv2.drawContours(drawing,[cnt],0,(0,255,0),2) 
     cv2.drawContours(drawing,[hull],0,(0,0,255),2) 
     cnt = cv2.approxPolyDP(cnt,0.01*cv2.arcLength(cnt,True),True)
@@ -71,12 +80,14 @@ while(cap.isOpened()) :
                 cv2.circle(img,far,5,[0,0,255],-1)
         except:
             continue
-##        print i 
-        if i in range(4,6):
-            x=(cx*1920)/320
-            y=(cy*1080)/300
-            mouse.position=(x,y)
-        i=0
+        print i
+##        if i in range(4,6):
+##            x=(cx*1920)/320
+##            y=(cy*1080)/300
+##            mouse.move(x,y)
+##        i=0
+    cv2.imshow('img2',res)
+    cv2.imshow("thresh1",thresh1)
     cv2.imshow('result',img)
     cv2.imshow("output",drawing)
 ##    cv2.imshow("thresh1",thresh1)
@@ -86,3 +97,4 @@ while(cap.isOpened()) :
         break
 cap.release()
 cv2.destroyAllWindows()
+
