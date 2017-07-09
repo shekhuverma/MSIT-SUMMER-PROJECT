@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import pickle
 print "Adjust the sliders so that background will be become black (Choose the best possible combination)"
+print "Move the switch (Last slider) to one if your are darkening the subject otherwise dont change it"
 cap = cv2.VideoCapture(0)
 # Creating a window for later use
 cv2.namedWindow('result')
