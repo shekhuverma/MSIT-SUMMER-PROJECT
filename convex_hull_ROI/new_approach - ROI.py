@@ -8,9 +8,6 @@ kernelopen=np.ones((6,6),np.uint8)
 kernelclose=np.ones((10,10),np.uint8)
 cap = cv2.VideoCapture(0)
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-###coordinates for mouse movements
-##coord_x=np.array([])
-##lis=[]
 
 #reding from config file and applying settings
 ORANGE_MIN = (np.loadtxt('config.txt')).astype("uint8")
@@ -81,12 +78,12 @@ while True:
         except:
             continue
         print i
-##        if i in range(4,6):
-##            x=(cx*1920)/320
-##            y=(cy*1080)/300
-##            mouse.move(x,y)
-##        i=0
-    cv2.imshow('img2',res)
+        if i in range(4,6):
+            x=(cx*1920)/320
+            y=(cy*1080)/300
+            mouse.position = (x, y)
+        i=0
+##    cv2.imshow('img2',res)
     cv2.imshow("thresh1",thresh1)
     cv2.imshow('result',img)
     cv2.imshow("output",drawing)
