@@ -11,6 +11,7 @@ cap = cv2.VideoCapture(0)
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 #Coordinates for mouse movement
 coord_x=np.array([])
+
 coord_y=np.array([])
 
 #reding from config file and applying settings
@@ -30,17 +31,17 @@ while True:
     hsv_img = cv2.cvtColor(img2,cv2.COLOR_BGR2HSV)   #converting to hsv for bg filtering
     hsv_img = cv2.inRange(hsv_img, ORANGE_MIN, ORANGE_MAX)
     res = cv2.bitwise_and(img2,img2, mask= hsv_img)   #masking image to remove bg
+##    res = cv2.morphologyEx(res, cv2.MORPH_OPEN, kernelopen)
+    res = cv2.morphologyEx(res, cv2.MORPH_CLOSE, kernelclose)
     gray=cv2.cvtColor(res,cv2.COLOR_BGR2GRAY)   #converting to grayscale
-    gray=cv2.GaussianBlur(gray,(9,9),0)
-    gray = clahe.apply(gray)        #histogram normalisation
-    value=65
+    gray = clahe.apply(gray)         #histogram normalisation
+    gray=cv2.GaussianBlur(gray,(11,11),0)    
     if switch==1:           #subject black
-        ret,thresh1 = cv2.threshold(gray,value,255,cv2.THRESH_BINARY_INV)
+##        ret,thresh1 = cv2.threshold(gray,value,255,cv2.THRESH_BINARY_INV)
+        ret3,thresh1 = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+
     else:
-        ret,thresh1 = cv2.threshold(gray,value,255,cv2.THRESH_BINARY)
-    thresh1 = cv2.morphologyEx(thresh1, cv2.MORPH_OPEN, kernelopen)
-    thresh1 = cv2.morphologyEx(thresh1, cv2.MORPH_CLOSE, kernelclose)
-    
+        ret3,thresh1 = cv2.threshold(gray,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 ##################################
     _,contours,heirachy= cv2.findContours(thresh1,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     drawing = np.zeros(img2.shape,np.uint8)
@@ -108,15 +109,15 @@ while True:
         cv2.circle(drawing,(coord_x,coord_y),5,[255,255,255],7)
 ##        cv2.circle(drawing,tuple(cnt[s][0]),5,[255,255,255],7)
         topmost=list(topmost)
-        x=(topmost[0]*1920)/320
-        y=(topmost[1]*1080)/300
+        x=(x*1920)/320
+        y=(y*1080)/300
         mouse.position = (x, y)
 ####        if i in range(4,6):
 ##            x=(cx*1920)/320
 ##            y=(cy*1080)/300
 ##            mouse.position = (x, y)
 ##        i=0
-##    cv2.imshow('img2',res)
+    cv2.imshow('img2',gray)
 ##    res=np.hstack((thresh1,drawing))
     cv2.imshow("thresh1",thresh1)
     cv2.imshow('result',img)
