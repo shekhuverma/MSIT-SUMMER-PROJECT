@@ -105,8 +105,10 @@ while True:
             continue
         cv2.circle(drawing,(coord_x2,coord_y2),5,[0,255,255],7) #yellow
         cv2.circle(drawing,(coord_x,coord_y),5,[255,255,255],7) #white
-        x=(coord_x2*1920)/320
-        y=(coord_y2*1080)/300
+        x=coord_x2*(1920/320)
+        y=coord_y2*(1080/300)
+##        x=list(mouse.position)[0]-x
+##        y=list(mouse.position)[0]-y
         mouse.position = (x, y)
 ####        if i in range(4,6):
 ##            x=(cx*1920)/320
