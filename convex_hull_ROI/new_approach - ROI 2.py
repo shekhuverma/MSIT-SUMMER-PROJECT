@@ -11,8 +11,10 @@ cap = cv2.VideoCapture(0)
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 #Coordinates for mouse movement
 coord_x=np.array([])
-
 coord_y=np.array([])
+
+coord_x2=np.array([])
+coord_y2=np.array([])
 
 #reding from config file and applying settings
 ORANGE_MIN = (np.loadtxt('config.txt')).astype("uint8")
@@ -31,16 +33,16 @@ while True:
     hsv_img = cv2.cvtColor(img2,cv2.COLOR_BGR2HSV)   #converting to hsv for bg filtering
     hsv_img = cv2.inRange(hsv_img, ORANGE_MIN, ORANGE_MAX)
     res = cv2.bitwise_and(img2,img2, mask= hsv_img)   #masking image to remove bg
-##    res = cv2.morphologyEx(res, cv2.MORPH_OPEN, kernelopen)
+    res = cv2.morphologyEx(res, cv2.MORPH_OPEN, kernelopen)
     res = cv2.morphologyEx(res, cv2.MORPH_CLOSE, kernelclose)
     gray=cv2.cvtColor(res,cv2.COLOR_BGR2GRAY)   #converting to grayscale
     gray = clahe.apply(gray)         #histogram normalisation
-    gray=cv2.GaussianBlur(gray,(11,11),0)    
+    gray=cv2.GaussianBlur(gray,(15,15),0)    
     if switch==1:           #subject black
-##        ret,thresh1 = cv2.threshold(gray,value,255,cv2.THRESH_BINARY_INV)
+####        ret,thresh1 = cv2.threshold(gray,value,255,cv2.THRESH_BINARY_INV)
         ret3,thresh1 = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
-    else:
+    elif switch==0:
         ret3,thresh1 = cv2.threshold(gray,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 ##################################
     _,contours,heirachy= cv2.findContours(thresh1,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -90,36 +92,31 @@ while True:
             for i in range(defects.shape[0]):
                 s,e,f,d = defects[i,0]
                 temp=list(cnt[e][0])
+                temp2=list(cnt[f][0])
                 coord_x=np.append(coord_x,temp[0])
                 coord_y=np.append(coord_y,temp[1])
+                coord_x2=np.append(coord_x2,temp2[0])
+                coord_y2=np.append(coord_y2,temp2[1])
             coord_x=int(np.mean(coord_x))
             coord_y=int(np.mean(coord_y))
-            
-            s1,e,f,d = defects[0,0]
-            s2,e,f,d = defects[1,0]
-            x1=list(cnt[s1][0])[0]
-            y1=list(cnt[s1][0])[1]
-            x2=list(cnt[s2][0])[0]
-            y2=list(cnt[s2][0])[1]
-            x=int((x1+x2)/2)
-            y=int((y1+y2)/2)
+            coord_x2=int(np.mean(coord_x2))
+            coord_y2=int(np.mean(coord_y2))
         except:
             continue
-        cv2.circle(drawing,(x,y),5,[0,255,255],7)
-        cv2.circle(drawing,(coord_x,coord_y),5,[255,255,255],7)
-##        cv2.circle(drawing,tuple(cnt[s][0]),5,[255,255,255],7)
-        topmost=list(topmost)
-        x=(x*1920)/320
-        y=(y*1080)/300
+        cv2.circle(drawing,(coord_x2,coord_y2),5,[0,255,255],7) #yellow
+        cv2.circle(drawing,(coord_x,coord_y),5,[255,255,255],7) #white
+        x=(coord_x2*1920)/320
+        y=(coord_y2*1080)/300
         mouse.position = (x, y)
 ####        if i in range(4,6):
 ##            x=(cx*1920)/320
 ##            y=(cy*1080)/300
 ##            mouse.position = (x, y)
 ##        i=0
-    cv2.imshow('img2',gray)
+
 ##    res=np.hstack((thresh1,drawing))
     cv2.imshow("thresh1",thresh1)
+    cv2.imshow("gray",gray)
     cv2.imshow('result',img)
     cv2.imshow("output",drawing)
 ##    cv2.imshow("thresh1",thresh1)
