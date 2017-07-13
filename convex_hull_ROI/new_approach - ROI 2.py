@@ -1,4 +1,4 @@
-import cv2,time,math
+import cv2,time
 import numpy as np
 import pyautogui
 from pynput.mouse import Button,Controller
@@ -12,10 +12,8 @@ clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 #Coordinates for mouse movement
 coord_x=np.array([])
 coord_y=np.array([])
-
-coord_x2=np.array([])
-coord_y2=np.array([])
-
+temp1=0
+temp2=0
 #reding from config file and applying settings
 ORANGE_MIN = (np.loadtxt('config.txt')).astype("uint8")
 ORANGE_MAX = (np.loadtxt('config1.txt')).astype("uint8")
@@ -77,45 +75,19 @@ while True:
         mind=0
         maxd=0
         try:
-##            for i in range(defects.shape[0]):
-##                s,e,f,d = defects[i,0]
-##                start = tuple(cnt[s][0])
-##                end = tuple(cnt[e][0])
-##                far = tuple(cnt[f][0])
-##                dist = cv2.pointPolygonTest(cnt,centr,True)
-##                cv2.line(img,start,end,[0,255,0],2)
-##                cv2.line(img,start,far,[255,255,0],2)
-##                cv2.line(img,end,far,[255,255,255],2)
-##                cv2.circle(img,end,5,[255,0,0],-1)
-##                cv2.circle(img,far,5,[0,0,255],-1)
-##                cv2.circle(img,start,5,[0,255,255],-1)  #yellow
             for i in range(defects.shape[0]):
                 s,e,f,d = defects[i,0]
-                temp=list(cnt[e][0])
-                temp2=list(cnt[f][0])
+                temp=list(cnt[f][0])
                 coord_x=np.append(coord_x,temp[0])
                 coord_y=np.append(coord_y,temp[1])
-                coord_x2=np.append(coord_x2,temp2[0])
-                coord_y2=np.append(coord_y2,temp2[1])
             coord_x=int(np.mean(coord_x))
             coord_y=int(np.mean(coord_y))
-            coord_x2=int(np.mean(coord_x2))
-            coord_y2=int(np.mean(coord_y2))
         except:
             continue
-        cv2.circle(drawing,(coord_x2,coord_y2),5,[0,255,255],7) #yellow
-        cv2.circle(drawing,(coord_x,coord_y),5,[255,255,255],7) #white
-        x=coord_x2*(1920/320)
-        y=coord_y2*(1080/300)
-##        x=list(mouse.position)[0]-x
-##        y=list(mouse.position)[0]-y
+        cv2.circle(drawing,(coord_x,coord_y),5,[0,255,255],7) #yellow
+        x=coord_x*(1920/320)
+        y=coord_y*(1080/300)
         mouse.position = (x, y)
-####        if i in range(4,6):
-##            x=(cx*1920)/320
-##            y=(cy*1080)/300
-##            mouse.position = (x, y)
-##        i=0
-
 ##    res=np.hstack((thresh1,drawing))
     cv2.imshow("thresh1",thresh1)
     cv2.imshow("gray",gray)
