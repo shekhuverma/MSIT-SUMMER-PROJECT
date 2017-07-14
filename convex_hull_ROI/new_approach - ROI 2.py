@@ -12,8 +12,6 @@ clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 #Coordinates for mouse movement
 coord_x=np.array([])
 coord_y=np.array([])
-temp1=0
-temp2=0
 #reding from config file and applying settings
 ORANGE_MIN = (np.loadtxt('config.txt')).astype("uint8")
 ORANGE_MAX = (np.loadtxt('config1.txt')).astype("uint8")
@@ -85,9 +83,15 @@ while True:
         except:
             continue
         cv2.circle(drawing,(coord_x,coord_y),5,[0,255,255],7) #yellow
+        # feedback loop to avoid shaking 
+        temp1=list(mouse.position)
         x=coord_x*(1920/320)
         y=coord_y*(1080/300)
-        mouse.position = (x, y)
+        if x in range(temp1[0]-10,temp1[0]+10):
+            if y in range(temp1[1]-10,temp1[1]+10):
+                pass
+        else:
+            mouse.position = (x, y)
 ##    res=np.hstack((thresh1,drawing))
     cv2.imshow("thresh1",thresh1)
     cv2.imshow("gray",gray)
