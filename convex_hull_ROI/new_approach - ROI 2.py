@@ -1,6 +1,5 @@
 import cv2,time
 import numpy as np
-import pyautogui
 from pynput.mouse import Button,Controller
 mouse=Controller()
 print "Press Q to quit the program at any time......."
@@ -57,11 +56,11 @@ while True:
         continue
     hull = cv2.convexHull(cnt)
     moments = cv2.moments(cnt)
-    if moments['m00']!=0:
-        cx = int(moments['m10']/moments['m00']) # cx = M10/M00
-        cy = int(moments['m01']/moments['m00']) # cy = M01/M00
-    centr=(cx,cy)       
-    cv2.circle(img,centr,5,[255,255,255],2)       
+##    if moments['m00']!=0:
+##        cx = int(moments['m10']/moments['m00']) # cx = M10/M00
+##        cy = int(moments['m01']/moments['m00']) # cy = M01/M00
+##    centr=(cx,cy)       
+##    cv2.circle(img,centr,5,[255,255,255],2)       
     cv2.drawContours(drawing,[cnt],0,(0,255,0),2) 
     cv2.drawContours(drawing,[hull],0,(0,0,255),2) 
     cnt = cv2.approxPolyDP(cnt,0.01*cv2.arcLength(cnt,True),True)
@@ -90,6 +89,8 @@ while True:
         if x in range(temp1[0]-10,temp1[0]+10):
             if y in range(temp1[1]-10,temp1[1]+10):
                 pass
+            else:
+                mouse.position = (x, y)
         else:
             mouse.position = (x, y)
 ##    res=np.hstack((thresh1,drawing))
