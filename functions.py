@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from random import randrange
 def non_max_suppression_fast(boxes, overlapThresh):
     # if there are no boxes, return an empty list
     if len(boxes) == 0:
@@ -52,12 +53,40 @@ def hog(img):
     gy = cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=1)
     mag, angle = cv2.cartToPolar(gx, gy, angleInDegrees=True)
     return mag
-
-
-
-
-
-
+def sliding_window(img, stepSize, windowSize):
+# slide a window across the image
+    for y in xrange(0, img.shape[0], stepSize):
+        for x in xrange(0, img.shape[1], stepSize):
+         # yield the current window
+            yield x, y,x+windowSize[0],x+windowSize[1]
+###############################################
+def quicksort(alist):
+   quickSortHelper(alist,0,len(alist)-1)
+def quickSortHelper(alist,first,last):
+   if first<last:
+       splitpoint = partition(alist,first,last)
+       quickSortHelper(alist,first,splitpoint-1)
+       quickSortHelper(alist,splitpoint+1,last)
+def partition(alist,first,last):
+   pivotvalue = alist[first]
+   leftmark = first+1
+   rightmark = last
+   done = False
+   while not done:
+       while leftmark <= rightmark and alist[leftmark] <= pivotvalue:
+           leftmark = leftmark + 1
+       while alist[rightmark] >= pivotvalue and rightmark >= leftmark:
+           rightmark = rightmark -1
+       if rightmark < leftmark:
+           done = True
+       else:
+           temp = alist[leftmark]
+           alist[leftmark] = alist[rightmark]
+           alist[rightmark] = temp
+   temp = alist[first]
+   alist[first] = alist[rightmark]
+   alist[rightmark] = temp
+   return rightmark
 
 
 

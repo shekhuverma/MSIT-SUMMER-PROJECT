@@ -9,7 +9,7 @@ cv2.namedWindow('result')
 def nothing(x):
     pass
 
-# Starting with 100's to prevent error while masking
+ # Starting with 100's to prevent error while masking
 h,s,v = 100,100,100
 
 # Creating track bar
